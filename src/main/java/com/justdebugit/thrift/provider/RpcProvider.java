@@ -20,6 +20,7 @@ import com.justdebugit.thrift.registry.ZkPathConstants;
 import com.justdebugit.thrift.server.DefaultTServerFactory;
 import com.justdebugit.thrift.server.TServerFactory;
 import com.justdebugit.thrift.utils.NetUtils;
+import com.justdebugit.thrift.utils.ZkRegistryUtils;
 
 public class RpcProvider extends AbstractLifeCycle{
 	private String host;
@@ -80,8 +81,9 @@ public class RpcProvider extends AbstractLifeCycle{
 		for (Map.Entry<String, TProcessor> entry : processorMap.entrySet()) {
 			StringBuilder pathBuilder = new StringBuilder("/"+entry.getKey()+ZkPathConstants.PROVIDER_SUFFIX_PATH);
 			pathBuilder.append("/"+host+":"+port);
-			pathSet.add(pathBuilder.toString());
-			registry.register(pathBuilder.toString());
+			String path = pathBuilder.toString();
+			pathSet.add(path);
+			ZkRegistryUtils.registerWithGuaranteed(registry, path, String.valueOf(System.currentTimeMillis()).getBytes());
 		}
 		server.serve();
 	}
@@ -90,6 +92,7 @@ public class RpcProvider extends AbstractLifeCycle{
 		server.stop();
 		for (String path : pathSet) {
 			 registry.unregister(path);
+			 pathSet.remove(path);
 		}
 	}
 	

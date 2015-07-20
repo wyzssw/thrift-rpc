@@ -2,6 +2,7 @@ package com.justdebugit.thrift.registry;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,6 +13,7 @@ import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.apache.curator.framework.recipes.cache.NodeCacheListener;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.NoNodeException;
@@ -20,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.justdebugit.thrift.registry.NodeEvent.EventType;
 
 /**
@@ -36,7 +40,10 @@ public class ZkCuratorRegistry implements Registry {
 	private final CuratorFactory curatorFactory;
 	private final CuratorFramework client;
 	private final NodeCacheManager nodeCacheManager;
-
+	private static final Set<Type> ignoreTypes = ImmutableSet.of(
+			Type.CONNECTION_SUSPENDED, Type.CONNECTION_RECONNECTED,
+			Type.CONNECTION_LOST, Type.INITIALIZED);
+	
 	public ZkCuratorRegistry(CuratorFactory curatorFactory) {
 		Preconditions.checkNotNull(curatorFactory);
 		this.curatorFactory = curatorFactory;
@@ -85,7 +92,6 @@ public class ZkCuratorRegistry implements Registry {
 	@Override
 	public void subscribe(String path, ChangeListener listener) {
 		nodeCacheManager.addListener(path, listener);
-
 	}
 
 	@Override
@@ -165,6 +171,9 @@ public class ZkCuratorRegistry implements Registry {
 				@Override
 				public void childEvent(CuratorFramework client,
 						PathChildrenCacheEvent event) throws Exception {
+					if (ignoreTypes.contains(event.getType())) {
+						return;
+					}
 					ImmutablePair<String, byte[]> pair = ImmutablePair
 							.<String, byte[]> of(event.getData().getPath(),
 									event.getData().getData());

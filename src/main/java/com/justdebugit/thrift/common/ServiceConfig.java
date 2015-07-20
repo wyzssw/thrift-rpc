@@ -4,6 +4,7 @@ import com.justdebugit.thrift.client.ThriftClientFactory;
 
 public class ServiceConfig {
 	
+	private Class<?> serviceClass;
 	
 	private Class<?> interfaceClass;
 	
@@ -58,22 +59,13 @@ public class ServiceConfig {
 		return this;
 	}
 
-//	public ThriftStatefulPoolFactory<?> getThriftStatefulPoolFactory() {
-//		return thriftStatefulPoolFactory;
-//	}
-//
-//	public RpcService setThriftStatefulPoolFactory(
-//			ThriftStatefulPoolFactory<?> thriftStatefulPoolFactory) {
-//		this.thriftStatefulPoolFactory = thriftStatefulPoolFactory;
-//		return this;
-//	}
-
 	public Class<?> getClientClass() {
 		return clientClass;
 	}
 
-	public void setClientClass(Class<?> clientClass) {
+	public ServiceConfig setClientClass(Class<?> clientClass) {
 		this.clientClass = clientClass;
+		return this;
 	}
 
 	public String getServiceName() {
@@ -82,6 +74,25 @@ public class ServiceConfig {
 
 	public ServiceConfig setServiceName(String serviceName) {
 		this.serviceName = serviceName;
+		return this;
+	}
+
+	public Class<?> getServiceClass() {
+		return serviceClass;
+	}
+
+	public ServiceConfig setServiceClass(Class<?> serviceClass) {
+		this.serviceClass = serviceClass;
+		if (interfaceClass==null) {
+			try {
+				Class<?> clazz = Class.forName(serviceClass.getName()+"$Iface");
+				interfaceClass = clazz;
+				Class<?> clientClazz = Class.forName(serviceClass.getName()+"$Client");
+				clientClass = clientClazz;
+			} catch (ClassNotFoundException e) {
+				throw new ThriftInitException(" can not find class of  "+serviceClass+"$Iface.class or "+serviceClass+ "$Client; "  +e.getMessage(), e);
+			}
+		}
 		return this;
 	}
 

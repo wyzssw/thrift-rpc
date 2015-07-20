@@ -19,7 +19,11 @@ public class UserManagerServiceImpl implements UserManagerService.Iface{
 	static{
 		UserInfo userInfo = new UserInfo(1);
 		userInfo.score = 10.2;
-		userInfo.name = "test";
+		StringBuilder stringBuilder  = new StringBuilder();
+		for (int i = 0; i < 10000; i++) {
+			stringBuilder.append("a");
+		}
+		userInfo.name = stringBuilder.toString();
 		UserInfo userInfo2 = new UserInfo(userInfo);
 		userInfo2.setName("test2");
 		userInfo2.setUid(2);
