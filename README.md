@@ -34,13 +34,16 @@ consumer
 	rpcConsumer.start();
 
 	final BlackService.Iface client = rpcConsumer
-			.getService(BlackService.Iface.class);
+			.getService("blackService");
 	System.out.println(client.isBlack(11));
 
 	final UserManagerService.Iface userCliIface = rpcConsumer
-			.getService(UserManagerService.Iface.class);
+			.getService("userService");
 	System.out.println(userCliIface.get(1));
 ```
 
 #性能测试
 经测试，TPS 达到 2.08w/s
+
+##TODO:
+  ThriftNonBlockingServer在并发情况下性能下降明显，考察下nifty的实现，底层server替换为netty
