@@ -32,25 +32,6 @@ public class RpcConsumerMain {
 				.getService("userService");
 		System.out.println(userCliIface.get(1));
 	   
-	   new Thread(new Runnable() {
-		
-		@Override
-		public void run() {
-		     long start = System.currentTimeMillis();
-		     int n = 0;
-		     while (n++<100000) {
-				try {
-					client.isBlack(11);
-				} catch (TException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-		    System.out.println(System.currentTimeMillis()-start);
-			
-		}
-	}).start();;
 	   Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		
 		@Override
