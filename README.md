@@ -44,3 +44,6 @@ consumer
 
 #性能测试
 经测试，TPS 达到 2.08w/s
+
+##TODO:
+  ThriftNonBlockingServer在并发情况下性能下降明显，考察下nifty的实现，底层server替换为netty
