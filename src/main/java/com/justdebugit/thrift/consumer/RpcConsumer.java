@@ -30,7 +30,7 @@ public class RpcConsumer extends AbstractLifeCycle{
 	
 	private  int       connectTimeOutForZk;
 	
-	private  final      ConcurrentMap<Class<?>, Object> proxyMap = Maps.newConcurrentMap();
+	private  final      ConcurrentMap<String, Object> proxyMap = Maps.newConcurrentMap();
 	private  final      Map<ServiceConfig, MultiPool<?>>   poolMap = Maps.newHashMap();
 	
 	
@@ -51,8 +51,9 @@ public class RpcConsumer extends AbstractLifeCycle{
 			     rpcService.setClientFactory(thriftClientFactory);	
 			 }
 			 String serviceName =  rpcService.getServiceName()==null?rpcService.getInterfaceClass().getName():rpcService.getServiceName();
+			 Preconditions.checkNotNull(serviceName, "Servicename must not be null");
 			 rpcService.setServiceName(serviceName);
-			 proxyMap.put(rpcService.getInterfaceClass(), buildServiceProxy(rpcService));
+			 proxyMap.put(serviceName, buildServiceProxy(rpcService));
 		}
 	}
 	
@@ -62,7 +63,7 @@ public class RpcConsumer extends AbstractLifeCycle{
 		 if (rpcService.getClientFactory()==null) {
 		     rpcService.setClientFactory(thriftClientFactory);	
 		 }
-		 proxyMap.put(rpcService.getInterfaceClass(), buildServiceProxy(rpcService));
+		 proxyMap.put(rpcService.getServiceName(), buildServiceProxy(rpcService));
 		
 	}
 	
@@ -118,8 +119,8 @@ public class RpcConsumer extends AbstractLifeCycle{
 	
 	
 	@SuppressWarnings("unchecked")
-	public <T>  T getService(Class<T> clientClass){
-		return (T)proxyMap.get(clientClass);
+	public <T>  T getService(String serviceName){
+		return (T)proxyMap.get(serviceName);
 	}
 
 
