@@ -34,11 +34,11 @@ consumer
 	rpcConsumer.start();
 
 	final BlackService.Iface client = rpcConsumer
-			.getService(BlackService.Iface.class);
+			.getService("blackService");
 	System.out.println(client.isBlack(11));
 
 	final UserManagerService.Iface userCliIface = rpcConsumer
-			.getService(UserManagerService.Iface.class);
+			.getService("userService");
 	System.out.println(userCliIface.get(1));
 ```
 
