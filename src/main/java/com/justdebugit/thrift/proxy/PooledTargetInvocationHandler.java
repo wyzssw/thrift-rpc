@@ -6,7 +6,12 @@ import java.lang.reflect.Method;
 import com.justdebugit.fastpool.Pool;
 import com.justdebugit.thrift.bytecode.Wrapper;
 
-
+/**
+ * 
+ * @author justdebugit@gmail.com
+ *
+ * @param <T>
+ */
 public class PooledTargetInvocationHandler<T> implements InvocationHandler {
 	
 	private final  Wrapper wrapper;

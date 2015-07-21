@@ -13,10 +13,11 @@ public class ZkPathConstants {
 	
 	/**
 	 * 格式约定:1 父节点/com.xxx.xxService/consumers
-	 *        2 子节点 192.168.137.1:8989
-	 *                192.168.137.2:8989
-	 *                192.168.137.3:8989
+	 *        2 子节点 192.168.137.1
+	 *                192.168.137.2
+	 *                192.168.137.3
 	 *        3 子节点代表消费服务的实例
+	 *        4 暂未用到
 	 */
 	public static final String CONSUMER_SUFFIX_PATH = "/consumers";
 	

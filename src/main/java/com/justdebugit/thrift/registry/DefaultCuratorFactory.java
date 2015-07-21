@@ -49,7 +49,7 @@ public class DefaultCuratorFactory implements CuratorFactory{
 		Preconditions.checkArgument(client!=null && client.getState()==CuratorFrameworkState.STARTED,"client is not started");
 		NodeCache nodeCache = new NodeCache(client, path);
 		try {
-			nodeCache.start(true);////同步初始化，将zk节点数据写入childrenCache
+			nodeCache.start(true);////同步初始化，将zk节点数据写入pathCache
 		} catch (Exception e) {
 			LOGGER.error("starting nodeCache error "+e.getMessage());
 			throw new IllegalStateException(e.getMessage(), e);
