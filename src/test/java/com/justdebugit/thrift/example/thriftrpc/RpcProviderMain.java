@@ -25,16 +25,17 @@ public class RpcProviderMain {
 		final RpcProvider rpcProvider = RpcProvider.builder()
 				.connectStringForzk("127.0.0.1:2181")
 				.processorMap(processorMap).serverPort(8080).build();
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+          
+          @Override
+          public void run() {
+              rpcProvider.stop();
+              
+          }
+      }));
 		rpcProvider.start();
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				rpcProvider.stop();
-				
-			}
-		}));
+		
 	}
 	
 }
